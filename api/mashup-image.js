@@ -1,7 +1,7 @@
 // api/mashup-image.js
 export default async function handler(req, res) {
-  // Allow your Shopify domain (change to your real domain):
-  const ALLOW_ORIGIN = "https://www.cartoondeadwork.com"; // or your .myshopify.com URL
+  // Allow your Shopify domain (change this if testing on preview URL)
+  const ALLOW_ORIGIN = "https://www.cartoondeadwork.com";
   res.setHeader("Access-Control-Allow-Origin", ALLOW_ORIGIN);
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
@@ -19,10 +19,10 @@ export default async function handler(req, res) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "gpt-image-1",           // DALL·E 3 API
+        model: "gpt-image-1",
         prompt,
-        size: `${width}x${height}`,     // "1024x1024", "1024x1536", etc.
-        quality                         // "standard" or "hd"
+        size: `${width}x${height}`,
+        quality
       })
     });
 
@@ -30,12 +30,10 @@ export default async function handler(req, res) {
     if (!r.ok) return res.status(r.status).json(data);
 
     const item = data?.data?.[0];
-    let image_url = item?.url;
-    if (!image_url && item?.b64_json) {
-      image_url = `data:image/png;base64,${item.b64_json}`;
-    }
+    let image_url = item?.url || (item?.b64_json ? `data:image/png;base64,${item.b64_json}` : null);
     return res.status(200).json({ image_url });
   } catch (err) {
     return res.status(500).json({ error: err?.message || "Server error" });
   }
 }
+
