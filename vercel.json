@@ -1,0 +1,8 @@
+{
+  "framework": null,
+  "buildCommand": "",
+  "outputDirectory": "",
+  "functions": {
+    "api/**/*.{js,ts}": { "runtime": "nodejs18.x" }
+  }
+}
